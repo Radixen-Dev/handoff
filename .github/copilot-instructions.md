@@ -1,0 +1,218 @@
+# handoff — Agent Instructions
+
+You have access to `handoff`, a CLI tool for transferring knowledge between AI agent sessions. It stores structured markdown packages in a local SQLite database (`~/.handoff/handoff.db`) and retrieves them on demand. Use it to preserve context across sessions so work is never lost when a context window fills up.
+
+---
+
+## When to Use handoff
+
+### At the start of every session
+Run `handoff list` (or `handoff list --project <name>` if you know the project name) to check for existing context packages. If any are relevant to the current work, retrieve and read them before proceeding.
+
+```bash
+handoff list
+handoff list --project myapp
+```
+
+### Proactively during long sessions
+When the conversation is getting long or your context window is filling up, proactively offer to store a knowledge transfer. Say something like:
+
+> "Our context is getting large — would you like me to store a knowledge transfer for the next session?"
+
+### When explicitly asked
+Phrases like "do a handoff", "save context", "knowledge transfer", "store session state", or "hand off to next agent" mean: compose and store a comprehensive knowledge package immediately.
+
+---
+
+## Installation Check
+
+Before using `handoff`, verify it is installed:
+
+```bash
+which handoff
+```
+
+If not found, guide the user to install it:
+
+```bash
+# Homebrew (recommended)
+brew tap Dborasik/tap
+brew install handoff
+
+# Go install
+go install github.com/Dborasik/handoff@latest
+```
+
+---
+
+## Commands
+
+### `handoff store`
+
+Reads content from stdin. Prints an 8-character hex package ID on success (e.g. `a3f9c12e`). Always report this ID to the user.
+
+```bash
+echo "<markdown content>" | handoff store \
+  --name "<name>" \
+  --summary "<one-line description>" \
+  --ttl <duration> \
+  --project "<project-key>" \
+  --tags "<tag1>,<tag2>"
+```
+
+| Flag | Required | Default | Description |
+|------|----------|---------|-------------|
+| `--name` | Yes | — | Short descriptive name, e.g. `auth-state` or `todo-api-progress` |
+| `--summary` | No | — | One-line human-readable description |
+| `--ttl` | No | `7d` | Expiry duration: `Nh` = N hours, `Nd` = N days |
+| `--project` | No | — | Project scoping key — use the repo or app name consistently |
+| `--tags` | No | — | Comma-separated labels, e.g. `auth,api,decisions` |
+
+**Important:** The command reads from stdin. Always pipe content into it. Do not pass content as a flag argument.
+
+### `handoff retrieve`
+
+Writes the package content to stdout.
+
+```bash
+handoff retrieve <id>             # retrieve by exact 8-char hex ID
+handoff retrieve --name <name>    # retrieve by name (returns the most recent match)
+```
+
+Pipe to a file if needed:
+```bash
+handoff retrieve --name auth-state > context.md
+```
+
+### `handoff list`
+
+Lists all non-expired packages in a table.
+
+```bash
+handoff list                      # all packages
+handoff list --project <key>      # filter by project
+```
+
+Output columns: `ID`, `NAME`, `PROJECT`, `TAGS`, `EXPIRES`
+
+### `handoff gc`
+
+Removes all expired packages. Expired packages are also automatically purged on every database operation — this command is optional.
+
+```bash
+handoff gc
+# Removed 3 expired package(s).
+```
+
+---
+
+## TTL Reference
+
+| Value | Duration | When to use |
+|-------|----------|-------------|
+| `2h` | 2 hours | Throwaway scratch context |
+| `1d` | 1 day | Short-lived work |
+| `7d` | 7 days | Default — typical working sessions |
+| `14d` | 14 days | Active multi-week projects |
+| `30d` | 30 days | Long-running or frequently revisited work |
+
+---
+
+## Environment
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `HANDOFF_DB` | `~/.handoff/handoff.db` | Override the SQLite database path |
+
+---
+
+## Knowledge Package Format
+
+When storing context, structure content as markdown. Be thorough — the agent reading this in the next session has no other context.
+
+```markdown
+## Context
+What this project is and what we are currently building. Include the tech stack,
+the overall goal, and any important background the next agent needs to know.
+
+## Key Decisions
+- Decision made: rationale and any alternatives that were considered
+- Decision made: rationale and any alternatives that were considered
+
+## Current State
+What is fully complete. What is currently in progress. What is blocked and why.
+
+## Next Steps
+1. First concrete action to take
+2. Second concrete action to take
+3. Third concrete action to take
+
+## Warnings / Gotchas
+- Known issues or fragile areas
+- Things that look wrong but are intentional
+- Setup steps that are easy to miss
+
+## Files of Note
+- `path/to/file.go` — what it does and why it matters
+- `path/to/other.ts` — what it does and why it matters
+```
+
+---
+
+## Full Workflow Example
+
+### Storing (Session A — context filling up)
+
+```bash
+echo '## Context
+Building a REST API for a todo app. Stack: Go + Chi router + PostgreSQL.
+Goal: full CRUD for tasks with JWT auth.
+
+## Key Decisions
+- PostgreSQL over SQLite: needed for multi-user support
+- JWT auth: 15-min access tokens + 7-day refresh tokens stored in httponly cookies
+- Chi router chosen over Gin for minimal footprint
+
+## Current State
+Complete: user registration, login, JWT middleware, GET /tasks, POST /tasks.
+In progress: PATCH /tasks/:id (half done, validation logic not yet written).
+Blocked: nothing currently blocked.
+
+## Next Steps
+1. Finish PATCH /tasks/:id — add input validation using go-playground/validator
+2. Implement DELETE /tasks/:id
+3. Write integration tests for task CRUD using testcontainers-go
+4. Add pagination to GET /tasks
+
+## Warnings / Gotchas
+- DB migrations live in /migrations — always run `make migrate` before testing
+- JWT_SECRET env var must be set or the server will panic on startup
+- The test DB uses port 5433 (not 5432) to avoid conflicts with local Postgres
+
+## Files of Note
+- `internal/auth/middleware.go` — JWT validation middleware, applied per-route
+- `internal/task/handler.go` — all task HTTP handlers
+- `migrations/` — SQL migration files, applied in filename order' \
+  | handoff store \
+    --name "todo-api-state" \
+    --summary "Task CRUD in progress, auth complete, tests pending" \
+    --ttl 14d \
+    --project "todo-api" \
+    --tags "api,crud,auth,go"
+```
+
+Output: `a3f9c12e`
+
+Tell the user: *"Stored as `a3f9c12e`. In the next session, retrieve it with `handoff retrieve a3f9c12e` or `handoff retrieve --name todo-api-state`."*
+
+### Retrieving (Session B — fresh start)
+
+```bash
+# Check what's available
+handoff list --project todo-api
+
+# Retrieve
+handoff retrieve a3f9c12e
+```
+
+Read the output, then proceed with full context.
