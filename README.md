@@ -3,13 +3,16 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Dborasik/handoff/releases"><img src="https://img.shields.io/github/v/release/Dborasik/handoff" alt="Release"></a>
-  <a href="https://go.dev"><img src="https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go&logoColor=white" alt="Go"></a>
+  <a href="https://github.com/Dborasik/handoff/releases"><img src="https://img.shields.io/github/v/release/Dborasik/handoff" alt="Latest Release"></a>
+  <a href="https://go.dev"><img src="https://img.shields.io/badge/Go-1.26+-00ADD8?logo=go&logoColor=white" alt="Go 1.26+"></a>
+  <a href="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey"><img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey" alt="Platform: macOS | Linux | Windows"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <a href="https://dborasik.github.io/handoff/"><img src="https://img.shields.io/badge/docs-dborasik.github.io%2Fhandoff-4051B5" alt="Documentation"></a>
 </p>
 
 <p align="center">
-<strong>When an AI agent's context window fills up, accumulated project knowledge is lost.</strong> <code>handoff</code> lets agents <strong>store</strong> structured knowledge packages to a local SQLite database and <strong>retrieve</strong> them in the next session — no cloud, no config, no server.
+  <strong>When an AI agent's context window fills up, accumulated project knowledge is lost.</strong><br>
+  <code>handoff</code> lets agents <strong>store</strong> structured knowledge packages to a local SQLite database and <strong>retrieve</strong> them in the next session — no cloud, no config, no server.
 </p>
 
 <p align="center">
@@ -20,278 +23,108 @@
 
 ## Install
 
-### Homebrew (recommended)
+**Homebrew** (macOS / Linux):
 
 ```bash
 brew tap Dborasik/tap
 brew install handoff
 ```
 
-### Go Install
-
-Requires Go 1.21+. No CGO, no system dependencies.
+**Go install** (all platforms, requires Go 1.26+):
 
 ```bash
 go install github.com/Dborasik/handoff@latest
 ```
 
-### Build from Source
+**Windows** — download the pre-built `.zip` from the [releases page](https://github.com/Dborasik/handoff/releases), extract it, and place `handoff.exe` in a directory on your `%PATH%`.
 
-```bash
-git clone https://github.com/Dborasik/handoff.git
-cd handoff
-go build -o handoff .
-```
-
----
-
-## Configuring Your Agent
-
-All agent instruction files live in [`instructions/`](instructions/) and [`*/skills/handoff/`](.github/skills/handoff/) — organized, versioned, and curl-able. Drop whichever file your agent needs into your own project.
-
-There are two approaches:
-
-### Option A — Always-on instructions
-
-The agent reads these on every session automatically.
-
-| Agent | Add this file to your project | Source |
-|-------|-------------------------------|--------|
-| GitHub Copilot | `.github/copilot-instructions.md` | [`instructions/copilot-instructions.md`](instructions/copilot-instructions.md) |
-| Claude Code | `CLAUDE.md` | [`instructions/CLAUDE.md`](instructions/CLAUDE.md) |
-| OpenAI Codex | `AGENTS.md` | [`instructions/AGENTS.md`](instructions/AGENTS.md) |
-| Cursor | `.cursor/rules/handoff.mdc` | [`instructions/cursor.mdc`](instructions/cursor.mdc) |
-
-```bash
-# GitHub Copilot
-mkdir -p .github
-curl -fsSL https://raw.githubusercontent.com/Dborasik/handoff/main/instructions/copilot-instructions.md \
-  -o .github/copilot-instructions.md
-
-# Claude Code
-curl -fsSL https://raw.githubusercontent.com/Dborasik/handoff/main/instructions/CLAUDE.md -o CLAUDE.md
-
-# OpenAI Codex
-curl -fsSL https://raw.githubusercontent.com/Dborasik/handoff/main/instructions/AGENTS.md -o AGENTS.md
-
-# Cursor
-mkdir -p .cursor/rules
-curl -fsSL https://raw.githubusercontent.com/Dborasik/handoff/main/instructions/cursor.mdc \
-  -o .cursor/rules/handoff.mdc
-```
-
-### Option B — Skill file (on-demand)
-
-A skill is loaded by the agent only when relevant — lighter weight, and works across all providers that support the `skills/<name>/SKILL.md` convention.
-
-| Location in your project | Supported by |
-|--------------------------|-------------|
-| `.github/skills/handoff/SKILL.md` | GitHub Copilot |
-| `.agents/skills/handoff/SKILL.md` | OpenAI Codex and other agents |
-| `.claude/skills/handoff/SKILL.md` | Claude Code |
-
-```bash
-# GitHub Copilot
-mkdir -p .github/skills/handoff
-curl -fsSL https://raw.githubusercontent.com/Dborasik/handoff/main/.github/skills/handoff/SKILL.md \
-  -o .github/skills/handoff/SKILL.md
-
-# OpenAI Codex and other agents
-mkdir -p .agents/skills/handoff
-curl -fsSL https://raw.githubusercontent.com/Dborasik/handoff/main/.agents/skills/handoff/SKILL.md \
-  -o .agents/skills/handoff/SKILL.md
-
-# Claude Code
-mkdir -p .claude/skills/handoff
-curl -fsSL https://raw.githubusercontent.com/Dborasik/handoff/main/.claude/skills/handoff/SKILL.md \
-  -o .claude/skills/handoff/SKILL.md
-```
-
-Once in place, the agent will automatically check for existing packages at the start of each session and offer to store context when things get long.
+> Full installation instructions — including PATH setup, build from source, and pre-built binaries for all platforms — are in the **[Install guide →](https://dborasik.github.io/handoff/install/)**
 
 ---
 
 ## Quick Start
 
-**In Session A** — agent stores its context before the window fills:
+### Session A — your context is filling up
 
-```bash
-echo "## Context
-We're building a REST API for a todo app. Using Go + Chi router.
+You say to the agent:
+> *"Our context is getting large. Do a handoff."*
 
-## Key Decisions
-- Postgres over SQLite for multi-user support
-- JWT auth, 15-min access tokens + 7-day refresh tokens
-- Endpoints: POST /tasks, GET /tasks, PATCH /tasks/:id, DELETE /tasks/:id
+The agent composes a structured summary of the current project state, stores it, and replies:
+> *"Done — stored as `a3f9c12e`."*
 
-## Current State
-Auth is complete. Working on task CRUD." | handoff store --name "todo-api-state" --project "todo-api" --ttl 7d
-```
+### Session B — you start a fresh session with a new agent
 
-Output:
-```
-a3f9c12e
-```
+You say:
+> *"Retrieve knowledge package `a3f9c12e`."*
 
-**In Session B** — agent retrieves context instantly:
+The agent fetches the stored context and resumes exactly where you left off — no re-explaining the project, no lost decisions, no starting over.
 
-```bash
-handoff retrieve a3f9c12e
-# or by name:
-handoff retrieve --name "todo-api-state"
-```
+> The agent handles the `handoff store` and `handoff retrieve` commands internally. See the **[Commands reference](https://dborasik.github.io/handoff/commands/)** for details on what it runs.
 
 ---
 
 ## Commands
 
-### `handoff store`
+| Command | Description |
+|---------|-------------|
+| `handoff store` | Read content from stdin and save it as a named knowledge package |
+| `handoff retrieve` | Fetch a package by ID or name and write its content to stdout |
+| `handoff list` | List all non-expired packages in a table |
+| `handoff gc` | Manually delete all expired packages |
+| `handoff completion` | Generate a shell completion script (bash, zsh, fish, PowerShell) |
 
-Reads content from stdin and stores it as a named knowledge package. Prints the package ID on success.
+All commands share a single SQLite database at `~/.handoff/handoff.db` (macOS/Linux) or `%USERPROFILE%\.handoff\handoff.db` (Windows), configurable via `HANDOFF_DB`.
 
-```bash
-echo "<content>" | handoff store --name <name> [options]
-```
-
-| Flag | Default | Description |
-|------|---------|-------------|
-| `--name` | *(required)* | Name for the package |
-| `--summary` | | Short one-line summary |
-| `--ttl` | `7d` | Time-to-live: `Nh` (hours) or `Nd` (days) |
-| `--project` | | Project grouping key |
-| `--tags` | | Comma-separated tags |
-
-**Examples:**
-
-```bash
-# Minimal
-echo "context..." | handoff store --name "my-notes"
-
-# Full options
-cat notes.md | handoff store \
-  --name "auth-design" \
-  --summary "JWT auth architecture notes" \
-  --ttl 14d \
-  --project "myapp" \
-  --tags "auth,api,decisions"
-```
+> **[Full command reference →](https://dborasik.github.io/handoff/commands/)**
 
 ---
 
-### `handoff retrieve`
+## Agent Setup
 
-Retrieves a package and writes its content to stdout. Look up by ID or name.
+Drop one file into your project. The agent will automatically check for existing packages at the start of every session, offer proactive knowledge transfers when the context grows large, and respond to phrases like *"do a handoff"* or *"save context"*.
 
-```bash
-handoff retrieve <id>
-handoff retrieve --name <name>
-```
+There are two options — always-on instruction files (loaded every session) and on-demand skill files (loaded only when relevant). See the **[Agent Setup guide](https://dborasik.github.io/handoff/agents/)** for a full comparison.
 
-When using `--name`, the most recently stored package with that name is returned.
+### Always-on instruction files
 
-**Examples:**
+| Agent | File to create in your project | One-line install |
+|-------|-------------------------------|-----------------|
+| Claude Code | `CLAUDE.md` | `curl -fsSL https://raw.githubusercontent.com/Dborasik/handoff/main/instructions/CLAUDE.md -o CLAUDE.md` |
+| GitHub Copilot | `.github/copilot-instructions.md` | `curl -fsSL https://raw.githubusercontent.com/Dborasik/handoff/main/instructions/copilot-instructions.md -o .github/copilot-instructions.md` |
+| OpenAI Codex | `AGENTS.md` | `curl -fsSL https://raw.githubusercontent.com/Dborasik/handoff/main/instructions/AGENTS.md -o AGENTS.md` |
+| Cursor | `.cursor/rules/handoff.mdc` | `curl -fsSL https://raw.githubusercontent.com/Dborasik/handoff/main/instructions/cursor.mdc -o .cursor/rules/handoff.mdc` |
 
-```bash
-handoff retrieve a3f9c12e
-handoff retrieve --name "auth-design"
+### On-demand skill files
 
-# Pipe directly into a file or another tool
-handoff retrieve --name "auth-design" > context.md
-```
-
----
-
-### `handoff list`
-
-Lists all non-expired packages in a table.
-
-```bash
-handoff list
-handoff list --project <key>
-```
-
-**Example output:**
-
-```
-ID        NAME           PROJECT   TAGS          EXPIRES
-a3f9c12e  auth-design    myapp     auth,api      2026-06-09 14:30
-b1d2e3f4  db-schema      myapp     db,postgres   2026-06-02 09:15
-```
-
-| Flag | Description |
-|------|-------------|
-| `--project` | Filter results to a specific project |
-
----
-
-### `handoff gc`
-
-Manually removes all expired packages. Expired packages are also automatically removed on every database operation, so running this is optional.
-
-```bash
-handoff gc
-# Removed 3 expired package(s).
-```
+| File to create | Supported by |
+|---------------|-------------|
+| `.github/skills/handoff/SKILL.md` | GitHub Copilot |
+| `.agents/skills/handoff/SKILL.md` | OpenAI Codex and other agents |
+| `.claude/skills/handoff/SKILL.md` | Claude Code |
 
 ---
 
 ## Configuration
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `HANDOFF_DB` | `~/.handoff/handoff.db` | Path to the SQLite database file |
+| Variable | Default (macOS/Linux) | Default (Windows) | Description |
+|----------|-----------------------|-------------------|-------------|
+| `HANDOFF_DB` | `~/.handoff/handoff.db` | `%USERPROFILE%\.handoff\handoff.db` | Path to the SQLite database file |
 
-Override the database location:
-
-```bash
-export HANDOFF_DB=/tmp/session.db
-```
+There is no config file. This is the only setting.
 
 ---
 
-## How It Works
+## Documentation
 
-- **Storage**: A single SQLite file at `~/.handoff/handoff.db`, created automatically on first use. Pure Go — no CGO, no system libraries required.
-- **Package IDs**: 8-character hex strings (e.g. `a3f9c12e`), randomly generated at store time.
-- **TTL**: Specified at creation as a duration (`7d`, `2h`, etc.) and stored as an absolute expiry timestamp. Every database operation deletes expired rows before running, so GC is automatic.
-- **No daemon, no config file**: The only state is the SQLite file.
+Full documentation is available at **[dborasik.github.io/handoff](https://dborasik.github.io/handoff/)**.
 
----
-
-## Agent Workflow
-
-This is the intended usage pattern for AI coding agents:
-
-1. **Agent A's context is filling up.** The user says: *"Do a knowledge transfer before we lose context."*
-2. **Agent A** composes a markdown summary of the current project state.
-3. **Agent A** runs:
-   ```bash
-   echo '<summary>' | handoff store --name "project-state" --ttl 14d
-   ```
-   and reports the ID back to the user (e.g. `a3f9c12e`).
-4. **User starts a new session** with Agent B.
-5. **User says:** *"Retrieve knowledge package `a3f9c12e`"* (or by name).
-6. **Agent B** runs:
-   ```bash
-   handoff retrieve a3f9c12e
-   ```
-   and reads the full context, resuming work immediately.
-
----
-
-## Uninstall
-
-```bash
-brew uninstall handoff
-```
-
-This removes the binary. `handoff` also creates a data directory at `~/.handoff/` the first time it runs — Homebrew does not touch this. To remove it too:
-
-```bash
-rm -rf ~/.handoff
-```
-
-> **Note:** `~/.handoff/handoff.db` contains all your stored knowledge packages. Only delete it if you're sure you no longer need them. If you used a custom path via `HANDOFF_DB`, remove that file instead.
+| Page | Contents |
+|------|---------|
+| [Install](https://dborasik.github.io/handoff/install/) | All install methods, PATH setup, pre-built binaries, uninstall |
+| [Commands](https://dborasik.github.io/handoff/commands/) | Full reference for all five commands with flags, output, and error tables |
+| [Agent Setup](https://dborasik.github.io/handoff/agents/) | Always-on vs skill file comparison, curl commands per agent |
+| [Workflow](https://dborasik.github.io/handoff/workflow/) | The two-session handoff pattern and recommended package format |
+| [How It Works](https://dborasik.github.io/handoff/internals/) | Database schema, ID generation, TTL, GC, design principles |
 
 ---
 
