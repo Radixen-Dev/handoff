@@ -1,19 +1,20 @@
-# handoff
+<p align="center">
+  <img src="assets/banner.png" alt="handoff — Transfer knowledge between AI agent sessions" width="100%">
+</p>
 
-**Transfer knowledge between AI agent sessions.**
+<p align="center">
+  <a href="https://github.com/Dborasik/handoff/releases"><img src="https://img.shields.io/github/v/release/Dborasik/handoff" alt="Release"></a>
+  <a href="https://go.dev"><img src="https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go&logoColor=white" alt="Go"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+</p>
 
-[![Release](https://img.shields.io/github/v/release/Dborasik/handoff)](https://github.com/Dborasik/handoff/releases)
-[![Go](https://img.shields.io/badge/Go-1.26+-00ADD8?logo=go&logoColor=white)](https://go.dev)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+<p align="center">
+<strong>When an AI agent's context window fills up, accumulated project knowledge is lost.</strong> <code>handoff</code> lets agents <strong>store</strong> structured knowledge packages to a local SQLite database and <strong>retrieve</strong> them in the next session — no cloud, no config, no server.
+</p>
 
-When an AI agent's context window fills up, accumulated project knowledge is lost. `handoff` solves this by letting agents **store** structured knowledge packages to a local SQLite database and **retrieve** them in a fresh session — no cloud, no config, no server.
-
-```
-Session A (context full)          Session B (fresh start)
-        │                                  │
-        ▼                                  ▼
-  handoff store ──► ~/.handoff/handoff.db ◄── handoff retrieve
-```
+<p align="center">
+  <img src="assets/flow.png" alt="Session A stores to handoff.db; Session B retrieves from handoff.db" width="680">
+</p>
 
 ---
 
