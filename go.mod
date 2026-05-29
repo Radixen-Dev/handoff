@@ -1,4 +1,4 @@
-module github.com/Dborasik/handoff
+module github.com/Radixen-Dev/handoff
 
 go 1.26.3
 

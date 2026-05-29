@@ -6,7 +6,7 @@ Every AI coding agent operates inside a finite context window. When that window 
 
 `handoff` solves this. Before the window closes, the agent stores a structured markdown summary to a local SQLite database. The next agent retrieves it and resumes work with full context, instantly.
 
-![handoff flow diagram — Session A stores to handoff.db, Session B retrieves from handoff.db](https://raw.githubusercontent.com/Dborasik/handoff/main/assets/flow.png)
+![handoff flow diagram — Session A stores to handoff.db, Session B retrieves from handoff.db](https://raw.githubusercontent.com/Radixen-Dev/handoff/main/assets/flow.png)
 
 ---
 

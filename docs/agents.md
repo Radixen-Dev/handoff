@@ -22,10 +22,10 @@ Add a single file to your project. The agent reads it at the start of every sess
 
 | Agent | File to create | Source |
 |-------|---------------|--------|
-| Claude Code | `CLAUDE.md` | [`instructions/CLAUDE.md`](https://github.com/Dborasik/handoff/blob/main/instructions/CLAUDE.md) |
-| GitHub Copilot | `.github/copilot-instructions.md` | [`instructions/copilot-instructions.md`](https://github.com/Dborasik/handoff/blob/main/instructions/copilot-instructions.md) |
-| OpenAI Codex | `AGENTS.md` | [`instructions/AGENTS.md`](https://github.com/Dborasik/handoff/blob/main/instructions/AGENTS.md) |
-| Cursor | `.cursor/rules/handoff.mdc` | [`instructions/cursor.mdc`](https://github.com/Dborasik/handoff/blob/main/instructions/cursor.mdc) |
+| Claude Code | `CLAUDE.md` | [`instructions/CLAUDE.md`](https://github.com/Radixen-Dev/handoff/blob/main/instructions/CLAUDE.md) |
+| GitHub Copilot | `.github/copilot-instructions.md` | [`instructions/copilot-instructions.md`](https://github.com/Radixen-Dev/handoff/blob/main/instructions/copilot-instructions.md) |
+| OpenAI Codex | `AGENTS.md` | [`instructions/AGENTS.md`](https://github.com/Radixen-Dev/handoff/blob/main/instructions/AGENTS.md) |
+| Cursor | `.cursor/rules/handoff.mdc` | [`instructions/cursor.mdc`](https://github.com/Radixen-Dev/handoff/blob/main/instructions/cursor.mdc) |
 
 Use `curl` to pull the file directly into your project:
 
@@ -33,7 +33,7 @@ Use `curl` to pull the file directly into your project:
 
     ```bash
     curl -fsSL \
-      https://raw.githubusercontent.com/Dborasik/handoff/main/instructions/CLAUDE.md \
+      https://raw.githubusercontent.com/Radixen-Dev/handoff/main/instructions/CLAUDE.md \
       -o CLAUDE.md
     ```
 
@@ -42,7 +42,7 @@ Use `curl` to pull the file directly into your project:
     ```bash
     mkdir -p .github
     curl -fsSL \
-      https://raw.githubusercontent.com/Dborasik/handoff/main/instructions/copilot-instructions.md \
+      https://raw.githubusercontent.com/Radixen-Dev/handoff/main/instructions/copilot-instructions.md \
       -o .github/copilot-instructions.md
     ```
 
@@ -50,7 +50,7 @@ Use `curl` to pull the file directly into your project:
 
     ```bash
     curl -fsSL \
-      https://raw.githubusercontent.com/Dborasik/handoff/main/instructions/AGENTS.md \
+      https://raw.githubusercontent.com/Radixen-Dev/handoff/main/instructions/AGENTS.md \
       -o AGENTS.md
     ```
 
@@ -59,7 +59,7 @@ Use `curl` to pull the file directly into your project:
     ```bash
     mkdir -p .cursor/rules
     curl -fsSL \
-      https://raw.githubusercontent.com/Dborasik/handoff/main/instructions/cursor.mdc \
+      https://raw.githubusercontent.com/Radixen-Dev/handoff/main/instructions/cursor.mdc \
       -o .cursor/rules/handoff.mdc
     ```
 
@@ -86,7 +86,7 @@ A skill file is loaded by the agent only when it determines the skill is relevan
     ```bash
     mkdir -p .claude/skills/handoff
     curl -fsSL \
-      https://raw.githubusercontent.com/Dborasik/handoff/main/.claude/skills/handoff/SKILL.md \
+      https://raw.githubusercontent.com/Radixen-Dev/handoff/main/.claude/skills/handoff/SKILL.md \
       -o .claude/skills/handoff/SKILL.md
     ```
 
@@ -95,7 +95,7 @@ A skill file is loaded by the agent only when it determines the skill is relevan
     ```bash
     mkdir -p .github/skills/handoff
     curl -fsSL \
-      https://raw.githubusercontent.com/Dborasik/handoff/main/.github/skills/handoff/SKILL.md \
+      https://raw.githubusercontent.com/Radixen-Dev/handoff/main/.github/skills/handoff/SKILL.md \
       -o .github/skills/handoff/SKILL.md
     ```
 
@@ -104,7 +104,7 @@ A skill file is loaded by the agent only when it determines the skill is relevan
     ```bash
     mkdir -p .agents/skills/handoff
     curl -fsSL \
-      https://raw.githubusercontent.com/Dborasik/handoff/main/.agents/skills/handoff/SKILL.md \
+      https://raw.githubusercontent.com/Radixen-Dev/handoff/main/.agents/skills/handoff/SKILL.md \
       -o .agents/skills/handoff/SKILL.md
     ```
 

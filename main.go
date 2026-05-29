@@ -1,6 +1,6 @@
 package main
 
-import "github.com/Dborasik/handoff/cmd"
+import "github.com/Radixen-Dev/handoff/cmd"
 
 func main() {
 	cmd.Execute()

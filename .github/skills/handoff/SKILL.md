@@ -25,10 +25,10 @@ If not found, install:
 
 ```bash
 # Homebrew
-brew tap Dborasik/tap && brew install handoff
+brew tap Radixen-Dev/tap && brew install handoff
 
 # Go
-go install github.com/Dborasik/handoff@latest
+go install github.com/Radixen-Dev/handoff@latest
 ```
 
 ---

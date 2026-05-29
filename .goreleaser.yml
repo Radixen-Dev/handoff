@@ -24,10 +24,10 @@ archives:
 
 brews:
   - repository:
-      owner: Dborasik
+      owner: Radixen-Dev
       name: homebrew-tap
     name: handoff
-    homepage: "https://github.com/Dborasik/handoff"
+    homepage: "https://github.com/Radixen-Dev/handoff"
     description: "Transfer knowledge between AI agent sessions"
     license: "MIT"
     install: |
@@ -45,5 +45,5 @@ changelog:
 
 release:
   github:
-    owner: Dborasik
+    owner: Radixen-Dev
     name: handoff

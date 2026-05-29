@@ -1,8 +1,8 @@
 site_name: handoff
 site_description: Transfer knowledge between AI agent sessions — local SQLite, no cloud, no config.
-site_url: https://dborasik.github.io/handoff/
-repo_name: Dborasik/handoff
-repo_url: https://github.com/Dborasik/handoff
+site_url: https://radixen-dev.github.io/handoff/
+repo_name: Radixen-Dev/handoff
+repo_url: https://github.com/Radixen-Dev/handoff
 edit_uri: edit/main/docs/
 
 theme:
@@ -67,4 +67,4 @@ plugins:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/Dborasik/handoff
+      link: https://github.com/Radixen-Dev/handoff

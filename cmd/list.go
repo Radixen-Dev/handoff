@@ -6,8 +6,8 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/Dborasik/handoff/internal/config"
-	"github.com/Dborasik/handoff/internal/db"
+	"github.com/Radixen-Dev/handoff/internal/config"
+	"github.com/Radixen-Dev/handoff/internal/db"
 
 	"github.com/spf13/cobra"
 )

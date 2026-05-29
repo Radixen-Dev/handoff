@@ -41,11 +41,11 @@ If not found, guide the user to install it:
 
 ```bash
 # Homebrew (recommended)
-brew tap Dborasik/tap
+brew tap Radixen-Dev/tap
 brew install handoff
 
 # Go install
-go install github.com/Dborasik/handoff@latest
+go install github.com/Radixen-Dev/handoff@latest
 ```
 
 ---

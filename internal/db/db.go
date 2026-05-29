@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Dborasik/handoff/internal/model"
+	"github.com/Radixen-Dev/handoff/internal/model"
 
 	_ "modernc.org/sqlite"
 )

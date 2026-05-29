@@ -12,7 +12,7 @@
         Homebrew is not available on Windows. Windows users should use [Go install](#go-install) or a [pre-built binary](#pre-built-binaries).
 
     ```bash
-    brew tap Dborasik/tap
+    brew tap Radixen-Dev/tap
     brew install handoff
     ```
 
@@ -27,7 +27,7 @@
     Requires Go 1.26 or later. Run `go version` to check. The binary is fully self-contained — no CGO, no system libraries.
 
     ```bash
-    go install github.com/Dborasik/handoff@latest
+    go install github.com/Radixen-Dev/handoff@latest
     ```
 
     The binary is placed in your `GOPATH/bin` directory. Make sure that directory is on your `PATH`:
@@ -59,7 +59,7 @@
     Requires Go 1.26 or later.
 
     ```bash
-    git clone https://github.com/Dborasik/handoff.git
+    git clone https://github.com/Radixen-Dev/handoff.git
     cd handoff
     ```
 
@@ -113,7 +113,7 @@ Use "handoff [command] --help" for more information about a command.
 
 ## Pre-built binaries
 
-Every [GitHub release](https://github.com/Dborasik/handoff/releases) includes pre-built archives. A `checksums.txt` file is provided for verification.
+Every [GitHub release](https://github.com/Radixen-Dev/handoff/releases) includes pre-built archives. A `checksums.txt` file is provided for verification.
 
 | Platform | Architecture | Archive |
 |----------|-------------|---------|
@@ -128,12 +128,12 @@ Every [GitHub release](https://github.com/Dborasik/handoff/releases) includes pr
 
     ```bash
     # Apple Silicon
-    curl -L https://github.com/Dborasik/handoff/releases/latest/download/handoff_darwin_arm64.tar.gz \
+    curl -L https://github.com/Radixen-Dev/handoff/releases/latest/download/handoff_darwin_arm64.tar.gz \
       | tar -xz
     mv handoff /usr/local/bin/
 
     # Intel
-    curl -L https://github.com/Dborasik/handoff/releases/latest/download/handoff_darwin_amd64.tar.gz \
+    curl -L https://github.com/Radixen-Dev/handoff/releases/latest/download/handoff_darwin_amd64.tar.gz \
       | tar -xz
     mv handoff /usr/local/bin/
     ```
@@ -142,12 +142,12 @@ Every [GitHub release](https://github.com/Dborasik/handoff/releases) includes pr
 
     ```bash
     # x86-64
-    curl -L https://github.com/Dborasik/handoff/releases/latest/download/handoff_linux_amd64.tar.gz \
+    curl -L https://github.com/Radixen-Dev/handoff/releases/latest/download/handoff_linux_amd64.tar.gz \
       | tar -xz
     mv handoff /usr/local/bin/
 
     # ARM64
-    curl -L https://github.com/Dborasik/handoff/releases/latest/download/handoff_linux_arm64.tar.gz \
+    curl -L https://github.com/Radixen-Dev/handoff/releases/latest/download/handoff_linux_arm64.tar.gz \
       | tar -xz
     mv handoff /usr/local/bin/
     ```
@@ -157,14 +157,14 @@ Every [GitHub release](https://github.com/Dborasik/handoff/releases) includes pr
     ```powershell
     # x86-64
     Invoke-WebRequest `
-      -Uri https://github.com/Dborasik/handoff/releases/latest/download/handoff_windows_amd64.zip `
+      -Uri https://github.com/Radixen-Dev/handoff/releases/latest/download/handoff_windows_amd64.zip `
       -OutFile handoff.zip
     Expand-Archive handoff.zip -DestinationPath .
     Move-Item handoff.exe "$env:GOPATH\bin\handoff.exe"
 
     # ARM64
     Invoke-WebRequest `
-      -Uri https://github.com/Dborasik/handoff/releases/latest/download/handoff_windows_arm64.zip `
+      -Uri https://github.com/Radixen-Dev/handoff/releases/latest/download/handoff_windows_arm64.zip `
       -OutFile handoff.zip
     Expand-Archive handoff.zip -DestinationPath .
     Move-Item handoff.exe "$env:GOPATH\bin\handoff.exe"
