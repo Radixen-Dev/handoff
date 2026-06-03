@@ -7,13 +7,20 @@
   <a href="https://go.dev"><img src="https://img.shields.io/badge/Go-1.26+-00ADD8?logo=go&logoColor=white" alt="Go 1.26+"></a>
   <a href="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey"><img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey" alt="Platform: macOS | Linux | Windows"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
-  <a href="https://radixen-dev.github.io/handoff/"><img src="https://img.shields.io/badge/docs-radixen-dev.github.io%2Fhandoff-4051B5" alt="Documentation"></a>
+  <a href="https://radixen.com/handoff"><img src="https://img.shields.io/badge/docs-radixen.com%2Fhandoff-4051B5" alt="Documentation"></a>
 </p>
 
+<br>
+
 <p align="center">
-  <strong>When an AI agent's context window fills up, accumulated project knowledge is lost.</strong><br>
-  <code>handoff</code> lets agents <strong>store</strong> structured knowledge packages to a local SQLite database and <strong>retrieve</strong> them in the next session — no cloud, no config, no server.
+  Every AI agent session has a memory limit.<br>
+  When it fills, everything you've built up together — decisions made, progress tracked, context established — disappears.<br>
+  The next agent starts from zero.<br><br>
+  <code>handoff</code> stores structured knowledge before the window closes,<br>
+  so the next session picks up exactly where the last one left off.
 </p>
+
+<br>
 
 <p align="center">
   <img src="assets/flow.png" alt="Session A stores to handoff.db; Session B retrieves from handoff.db" width="680">
@@ -23,72 +30,78 @@
 
 ## Install
 
-**Homebrew** (macOS / Linux):
+**macOS / Linux**
 
 ```bash
 brew tap Radixen-Dev/tap
 brew install handoff
 ```
 
-**Go install** (all platforms, requires Go 1.26+):
+**All platforms** (requires Go 1.26+)
 
 ```bash
 go install github.com/Radixen-Dev/handoff@latest
 ```
 
-**Windows** — download the pre-built `.zip` from the [releases page](https://github.com/Radixen-Dev/handoff/releases), extract it, and place `handoff.exe` in a directory on your `%PATH%`.
+**Windows** — download a pre-built `.zip` from the [releases page](https://github.com/Radixen-Dev/handoff/releases), extract it, and place `handoff.exe` on your `%PATH%`.
 
-> Full installation instructions — including PATH setup, build from source, and pre-built binaries for all platforms — are in the **[Install guide →](https://radixen-dev.github.io/handoff/install/)**
+> Full guide — PATH setup, build from source, all platforms → **[Install →](https://radixen-dev.github.io/handoff/install/)**
 
 ---
 
 ## Quick Start
 
-### Session A — your context is filling up
+### Session A — context is filling up
 
-You say to the agent:
+You tell the agent:
+
 > *"Our context is getting large. Do a handoff."*
 
-The agent composes a structured summary of the current project state, stores it, and replies:
-> *"Done — stored as `a3f9c12e`."*
+The agent composes a structured summary of current state — decisions made, work in progress, next steps, gotchas — and stores it:
 
-### Session B — you start a fresh session with a new agent
+```
+Done — stored as a3f9c12e
+```
+
+### Session B — fresh session, zero re-explaining
 
 You say:
-> *"Retrieve knowledge package `a3f9c12e`."*
 
-The agent fetches the stored context and resumes exactly where you left off — no re-explaining the project, no lost decisions, no starting over.
+> *"Retrieve knowledge package a3f9c12e."*
 
-> The agent handles the `handoff store` and `handoff retrieve` commands internally. See the **[Commands reference](https://radixen-dev.github.io/handoff/commands/)** for details on what it runs.
+The agent fetches the full summary and resumes exactly where work left off, without any re-explaining of the project.
+
+> [!NOTE]
+> The agent handles `handoff store` and `handoff retrieve` internally. You never need to run them yourself. See the **[Commands reference →](https://radixen-dev.github.io/handoff/commands/)** for the full details.
 
 ---
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `handoff store` | Read content from stdin and save it as a named knowledge package |
-| `handoff retrieve` | Fetch a package by ID or name and write its content to stdout |
-| `handoff list` | List all non-expired packages in a table |
-| `handoff gc` | Manually delete all expired packages |
-| `handoff completion` | Generate a shell completion script (bash, zsh, fish, PowerShell) |
+```
+handoff store         Read from stdin → save as a named package → print 8-char ID
+handoff retrieve      Fetch by ID or name → write full content to stdout
+handoff list          Show all live packages in a clean table
+handoff gc            Purge all expired packages on demand
+handoff completion    Shell completion for bash, zsh, fish, and PowerShell
+```
 
-All commands share a single SQLite database at `~/.handoff/handoff.db` (macOS/Linux) or `%USERPROFILE%\.handoff\handoff.db` (Windows), configurable via `HANDOFF_DB`.
+All five commands share a single SQLite file at `~/.handoff/handoff.db` (macOS/Linux) or `%USERPROFILE%\.handoff\handoff.db` (Windows).
 
-> **[Full command reference →](https://radixen-dev.github.io/handoff/commands/)**
+> **[Full command reference — flags, output examples, error tables →](https://radixen-dev.github.io/handoff/commands/)**
 
 ---
 
 ## Agent Setup
 
-Drop one file into your project. The agent will automatically check for existing packages at the start of every session, offer proactive knowledge transfers when the context grows large, and respond to phrases like *"do a handoff"* or *"save context"*.
-
-There are two options — always-on instruction files (loaded every session) and on-demand skill files (loaded only when relevant). See the **[Agent Setup guide](https://radixen-dev.github.io/handoff/agents/)** for a full comparison.
+Drop one file into your project. The agent will automatically check for existing packages at session start, offer proactive transfers when context grows large, and respond to phrases like *"do a handoff"* or *"save context"*.
 
 ### Always-on instruction files
 
-| Agent | File to create in your project | One-line install |
-|-------|-------------------------------|-----------------|
+Loaded every session. Install once per project.
+
+| Agent | File | One-line install |
+|-------|------|-----------------|
 | Claude Code | `CLAUDE.md` | `curl -fsSL https://raw.githubusercontent.com/Radixen-Dev/handoff/main/instructions/CLAUDE.md -o CLAUDE.md` |
 | GitHub Copilot | `.github/copilot-instructions.md` | `curl -fsSL https://raw.githubusercontent.com/Radixen-Dev/handoff/main/instructions/copilot-instructions.md -o .github/copilot-instructions.md` |
 | OpenAI Codex | `AGENTS.md` | `curl -fsSL https://raw.githubusercontent.com/Radixen-Dev/handoff/main/instructions/AGENTS.md -o AGENTS.md` |
@@ -96,38 +109,43 @@ There are two options — always-on instruction files (loaded every session) and
 
 ### On-demand skill files
 
-| File to create | Supported by |
-|---------------|-------------|
-| `.github/skills/handoff/SKILL.md` | GitHub Copilot |
-| `.agents/skills/handoff/SKILL.md` | OpenAI Codex and other agents |
+> [!TIP]
+> Prefer this when you want `handoff` loaded only when the agent recognizes a handoff request, rather than on every session.
+
+| File | Agent |
+|------|-------|
 | `.claude/skills/handoff/SKILL.md` | Claude Code |
+| `.github/skills/handoff/SKILL.md` | GitHub Copilot |
+| `.agents/skills/handoff/SKILL.md` | OpenAI Codex and others |
+
+> **[Agent Setup guide — always-on vs. skill files, comparison and tradeoffs →](https://radixen-dev.github.io/handoff/agents/)**
 
 ---
 
 ## Configuration
 
-| Variable | Default (macOS/Linux) | Default (Windows) | Description |
-|----------|-----------------------|-------------------|-------------|
-| `HANDOFF_DB` | `~/.handoff/handoff.db` | `%USERPROFILE%\.handoff\handoff.db` | Path to the SQLite database file |
+`handoff` has exactly one setting.
 
-There is no config file. This is the only setting.
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `HANDOFF_DB` | `~/.handoff/handoff.db`<br>`%USERPROFILE%\.handoff\handoff.db` (Windows) | Path to the SQLite database file |
+
+There is no config file. Set the variable or don't — either way, it works.
 
 ---
 
 ## Documentation
 
-Full documentation is available at **[radixen-dev.github.io/handoff](https://radixen-dev.github.io/handoff/)**.
+Full documentation at **[radixen-dev.github.io/handoff](https://radixen-dev.github.io/handoff/)**
 
-| Page | Contents |
-|------|---------|
+| | |
+|--|--|
 | [Install](https://radixen-dev.github.io/handoff/install/) | All install methods, PATH setup, pre-built binaries, uninstall |
-| [Commands](https://radixen-dev.github.io/handoff/commands/) | Full reference for all five commands with flags, output, and error tables |
-| [Agent Setup](https://radixen-dev.github.io/handoff/agents/) | Always-on vs skill file comparison, curl commands per agent |
-| [Workflow](https://radixen-dev.github.io/handoff/workflow/) | The two-session handoff pattern and recommended package format |
-| [How It Works](https://radixen-dev.github.io/handoff/internals/) | Database schema, ID generation, TTL, GC, design principles |
+| [Commands](https://radixen-dev.github.io/handoff/commands/) | Full flag reference, output examples, error handling |
+| [Agent Setup](https://radixen-dev.github.io/handoff/agents/) | Always-on vs. skill files, per-agent curl commands |
+| [Workflow](https://radixen-dev.github.io/handoff/workflow/) | The two-session pattern, recommended package format |
+| [How It Works](https://radixen-dev.github.io/handoff/internals/) | SQLite schema, IDs, TTL, GC, design principles |
 
 ---
-
-## License
 
 MIT — see [LICENSE](LICENSE).
