@@ -14,7 +14,7 @@
 
 <p align="center">
   Every AI agent session has a memory limit.<br>
-  When it fills, everything you've built up together — decisions made, progress tracked, context established — disappears.<br>
+  When it fills, everything accumulated — decisions, progress, context — disappears.<br>
   The next agent starts from zero.<br><br>
   <code>handoff</code> stores structured knowledge before the window closes,<br>
   so the next session picks up exactly where the last one left off.
